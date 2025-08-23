@@ -4,6 +4,7 @@ dotenv.config();
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db';
+import userRoutes from '../src/routes/userRoutes'
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-
+app.use('/api',userRoutes)
 
 const port = process.env.PORT || 5000;
 
