@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
      await persistor.flush(); //ensure persisted state is updated
     storage.removeItem('persist:auth');//clear persisted redux state
     await logoutUser()
-    router.push('/')
+    router.replace('/')
 
   }
 

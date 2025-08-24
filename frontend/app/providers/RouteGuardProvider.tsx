@@ -11,7 +11,7 @@ export default function RouteGuardProvider({ children }: { children: React.React
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const guestOnlyRoutes = ["/login", "/signup"];
-  const protectedRoutes = ["/createBlog", "/profile"];
+  const protectedRoutes = ["/blogs/create", "/profile","/blogs/[id]/edit"];
 
   useEffect(() => {
     if (guestOnlyRoutes.includes(pathname) && isAuthenticated) {
