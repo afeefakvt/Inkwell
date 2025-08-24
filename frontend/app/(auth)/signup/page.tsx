@@ -20,20 +20,50 @@ export default function SignupPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<Partial<IUser>>({});
 
   const router = useRouter();
 
+  const validateForm = () => {
+    const errors: Partial<IUser> = {};
+
+    if (!formData.name.trim()) {
+      errors.name = "Full name is required";
+    } else if (formData.name.length < 3) {
+      errors.name = "Name must be at least 3 characters long";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Enter a valid email address";
+    }
+
+    if (!formData.password) {
+      errors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+    }
+
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormErrors({ ...formErrors, [e.target.name]: "" }); // clear error as user types
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setError(null);
@@ -73,8 +103,8 @@ export default function SignupPage() {
               value={formData.name}
               onChange={handleChange}
               placeholder="John Doe"
-              required
             />
+            {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
           </div>
 
           <div className="mb-4">
@@ -85,8 +115,8 @@ export default function SignupPage() {
               value={formData.email}
               onChange={handleChange}
               placeholder="you@email.com"
-              required
             />
+            {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
           </div>
 
           <div className="mb-4">
@@ -99,7 +129,6 @@ export default function SignupPage() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
-                required
               />
               <button
                 type="button"
@@ -109,6 +138,7 @@ export default function SignupPage() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {formErrors.password && <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>}
           </div>
 
           <div className="mb-6">
@@ -121,7 +151,7 @@ export default function SignupPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Re-enter your password"
-                required
+                
               />
               <button
                 type="button"
@@ -131,6 +161,9 @@ export default function SignupPage() {
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {formErrors.confirmPassword && (
+              <p className="text-red-500 text-xs mt-1">{formErrors.confirmPassword}</p>
+            )}
           </div>
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}

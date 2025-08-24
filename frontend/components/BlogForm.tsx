@@ -6,42 +6,54 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { publishBlog } from "@/lib/api/blog";
 import { useRouter } from "next/navigation";
-import {
-  blogValidationSchema,
-  BlogFormValues,
-} from "@/lib/vaidations/blogValidation";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 export default function BlogForm() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
 
   const router = useRouter();
+
+  const validate = () => {
+    const newErrors: { title?: string; content?: string } = {};
+
+    if (!title.trim()) {
+      newErrors.title = "Title is required.";
+    } else if (title.trim().length < 5) {
+      newErrors.title = "Title must be at least 5 characters.";
+    } else if (title.trim().length > 100) {
+      newErrors.title = "Title cannot exceed 100 characters.";
+    }
+
+    if (!content.trim()) {
+      newErrors.content = "Content is required.";
+    } else if (content.trim().length < 20) {
+      newErrors.content = "Content must be at least 20 characters.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim() || !content.trim()) {
-      setError("Both title and content are required.");
-      return;
-    }
+    if (!validate()) return;
 
     try {
       setLoading(true);
-      setError(null);
 
-      const res = await publishBlog({ title, content });
-
+      const res = await publishBlog({ title: title.trim(), content: content.trim() });
       console.log("Blog created:", res);
+
       toast.success("Blog published successfully");
       setTitle("");
       setContent("");
       router.push("/blogs");
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
+      toast.error(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -49,8 +61,6 @@ export default function BlogForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-
       <div>
         <label className="block text-sm font-medium mb-1">Title</label>
         <Input
@@ -58,6 +68,7 @@ export default function BlogForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
       </div>
 
       <div>
@@ -68,6 +79,7 @@ export default function BlogForm() {
           onChange={(e) => setContent(e.target.value)}
           className="min-h-[150px]"
         />
+        {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content}</p>}
       </div>
 
       <Button

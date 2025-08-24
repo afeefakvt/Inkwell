@@ -16,13 +16,12 @@ export default function EditBlogPage() {
 
   const [loading, setLoading] = useState(false);
   const [blog, setBlog] = useState({ title: "", content: "" });
+  const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
 
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const res = await getBlogById(blogId)
-        console.log(res.blog);
-        
+        const res = await getBlogById(blogId);
         setBlog({ title: res.blog.title, content: res.blog.content });
       } catch (err: any) {
         toast.error(err.message || "Failed to fetch blog");
@@ -31,13 +30,40 @@ export default function EditBlogPage() {
     fetchBlog();
   }, [blogId]);
 
+  // validation function
+  const validate = () => {
+    const newErrors: { title?: string; content?: string } = {};
+
+    if (!blog.title.trim()) {
+      newErrors.title = "Title is required.";
+    } else if (blog.title.trim().length < 5) {
+      newErrors.title = "Title must be at least 5 characters.";
+    } else if (blog.title.trim().length > 100) {
+      newErrors.title = "Title cannot exceed 100 characters.";
+    }
+
+    if (!blog.content.trim()) {
+      newErrors.content = "Content is required.";
+    } else if (blog.content.trim().length < 20) {
+      newErrors.content = "Content must be at least 20 characters.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
+
     setLoading(true);
     try {
-      await updateBlog(blogId,blog)
+      await updateBlog(blogId, {
+        title: blog.title.trim(),
+        content: blog.content.trim(),
+      });
       toast.success("Blog updated successfully");
-      router.push("/profile"); 
+      router.push("/profile");
     } catch (err: any) {
       toast.error(err.message || "Error updating blog");
     } finally {
@@ -58,35 +84,40 @@ export default function EditBlogPage() {
               <Input
                 value={blog.title}
                 onChange={(e) => setBlog({ ...blog, title: e.target.value })}
-                required
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              )}
             </div>
+
             <div>
               <label className="text-sm font-medium">Content</label>
               <Textarea
                 rows={8}
                 value={blog.content}
                 onChange={(e) => setBlog({ ...blog, content: e.target.value })}
-                required
               />
+              {errors.content && (
+                <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+              )}
             </div>
-        <div className="flex gap-2">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="bg-[#6b2737] text-white hover:bg-[#581c2b]"
-            >
-              {loading ? "Saving..." : "Save Changes"}
-            </Button>
-            <Button
+
+            <div className="flex gap-2">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="bg-[#6b2737] text-white hover:bg-[#581c2b]"
+              >
+                {loading ? "Saving..." : "Save Changes"}
+              </Button>
+              <Button
                 type="button"
                 variant="outline"
                 onClick={() => router.push("/profile")}
               >
                 Cancel
               </Button>
-        </div>
-
+            </div>
           </form>
         </CardContent>
       </Card>

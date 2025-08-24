@@ -55,15 +55,19 @@ axiosInstance.interceptors.response.use(
           if (!refreshResponse?.data?.token) {
             throw new Error("No new access token recieved");
           }
+          const newToken = refreshResponse.data.token;
+
           console.log("new access token recieved", refreshResponse.data.token);
 
           store.dispatch(
             loginSuccess({
-              accessToken: refreshResponse.data.token,
+              accessToken: newToken,
               user: store.getState().auth.user,
               isAuthenticated: true,
             })
           );
+              Cookies.set("authToken", newToken, { expires: 15 / 1440 });
+
           error.config.headers[
             "Authorization"
           ] = `Bearer ${refreshResponse.data.token}`;

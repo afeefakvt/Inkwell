@@ -39,6 +39,10 @@ export default function ProfilePage() {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loadingBlogs, setLoadingBlogs] = useState(false);
 
+  // Validation states
+  const [profileErrors, setProfileErrors] = useState<{ name?: string; email?: string }>({});
+  const [passwordErrors, setPasswordErrors] = useState<{ currentPassword?: string; newPassword?: string; confirmNewPassword?: string }>({});
+
   if (!user) {
     return <div className="text-center py-10">Loading profile...</div>;
   }
@@ -70,41 +74,76 @@ export default function ProfilePage() {
     fetchBlogs();
   }, []);
 
+  const validateProfile = () => {
+    const errors: { name?: string; email?: string } = {};
+
+    if (!profile.name.trim()) errors.name = "Name is required.";
+    else if (profile.name.trim().length < 3) errors.name = "Name must be at least 3 characters.";
+    else if (profile.name.trim().length > 50) errors.name = "Name cannot exceed 50 characters.";
+
+    if (!profile.email.trim()) errors.email = "Email is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)) errors.email = "Invalid email format.";
+
+    setProfileErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validatePasswords = () => {
+    const errors: { currentPassword?: string; newPassword?: string; confirmNewPassword?: string } = {};
+
+    if (!passwords.currentPassword) errors.currentPassword = "Current password is required.";
+    if (!passwords.newPassword || passwords.newPassword.length < 6)
+      errors.newPassword = "New password must be at least 6 characters.";
+    if (passwords.newPassword !== passwords.confirmNewPassword)
+      errors.confirmNewPassword = "Passwords do not match.";
+
+    setPasswordErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateProfile()) return;
+
     setLoading(true);
     try {
       const updated = await updateProfile({
-        name: profile.name,
-        email: profile.email,
+        name: profile.name.trim(),
+        email: profile.email.trim(),
       });
 
-      dispatch(updateUser({ user: { ...user, ...updated } }));
-
+      dispatch(updateUser({ user:updated }));
       toast.success("Profile updated successfully");
       setIsEditing(false);
     } catch (err: any) {
       toast.error(err.message || "Error updating profile");
     } finally {
       setLoading(false);
+      setProfile({
+        name:user.name,
+        email:user.email
+      })
     }
   };
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validatePasswords()) return;
+
     setLoading(true);
     try {
       await changePassword(passwords);
       toast.success("Password changed successfully");
+      
+    } catch (err: any) {
+      toast.error(err.message || "Error changing password");
+    } finally {
+      setLoading(false);
       setPasswords({
         currentPassword: "",
         newPassword: "",
         confirmNewPassword: "",
       });
-    } catch (err: any) {
-      toast.error(err.message || "Error changing password");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -147,22 +186,18 @@ export default function ProfilePage() {
                 <label className="text-sm font-medium">Name</label>
                 <Input
                   value={profile.name}
-                  onChange={(e) =>
-                    setProfile({ ...profile, name: e.target.value })
-                  }
-                  required
+                  onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                 />
+                {profileErrors.name && <p className="text-red-500 text-sm mt-1">{profileErrors.name}</p>}
               </div>
               <div>
                 <label className="text-sm font-medium">Email</label>
                 <Input
                   type="email"
                   value={profile.email}
-                  onChange={(e) =>
-                    setProfile({ ...profile, email: e.target.value })
-                  }
-                  required
+                  onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                 />
+                {profileErrors.email && <p className="text-red-500 text-sm mt-1">{profileErrors.email}</p>}
               </div>
 
               <div className="flex gap-2">
@@ -193,6 +228,7 @@ export default function ProfilePage() {
           <TabsTrigger value="password">Change Password</TabsTrigger>
         </TabsList>
 
+        {/* My Blogs Section */}
         <TabsContent value="blogs" className="space-y-4">
           {loadingBlogs ? (
             <p className="text-center py-4">Loading blogs...</p>
@@ -204,12 +240,12 @@ export default function ProfilePage() {
             blogs.map((blog) => (
               <Card key={blog._id}>
                 <CardHeader>
-                  <CardTitle onClick={()=>router.push(`/blogs/${blog._id}`)} className="cursor-pointer">{blog.title}</CardTitle>
+                  <CardTitle onClick={() => router.push(`/blogs/${blog._id}`)} className="cursor-pointer">
+                    {blog.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {blog.content.slice(0, 120)}...
-                  </p>
+                  <p className="text-sm text-muted-foreground">{blog.content.slice(0, 120)}...</p>
                   <p className="text-xs mt-2 text-gray-500">
                     {new Date(blog.createdAt).toLocaleDateString()}
                   </p>
@@ -234,13 +270,8 @@ export default function ProfilePage() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. It will permanently
-                            delete your blog
-                            <span className="font-semibold">
-                              {" "}
-                              “{blog.title}”
-                            </span>
-                            .
+                            This action cannot be undone. It will permanently delete your blog
+                            <span className="font-semibold"> “{blog.title}”</span>.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -269,50 +300,31 @@ export default function ProfilePage() {
             <CardContent>
               <form className="space-y-4" onSubmit={handleChangePassword}>
                 <div>
-                  <label className="text-sm font-medium">
-                    Current Password
-                  </label>
+                  <label className="text-sm font-medium">Current Password</label>
                   <Input
                     type="password"
                     value={passwords.currentPassword}
-                    onChange={(e) =>
-                      setPasswords({
-                        ...passwords,
-                        currentPassword: e.target.value,
-                      })
-                    }
-                    required
+                    onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })}
                   />
+                  {passwordErrors.currentPassword && <p className="text-red-500 text-sm mt-1">{passwordErrors.currentPassword}</p>}
                 </div>
                 <div>
                   <label className="text-sm font-medium">New Password</label>
                   <Input
                     type="password"
                     value={passwords.newPassword}
-                    onChange={(e) =>
-                      setPasswords({
-                        ...passwords,
-                        newPassword: e.target.value,
-                      })
-                    }
-                    required
+                    onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
                   />
+                  {passwordErrors.newPassword && <p className="text-red-500 text-sm mt-1">{passwordErrors.newPassword}</p>}
                 </div>
                 <div>
-                  <label className="text-sm font-medium">
-                    Confirm New Password
-                  </label>
+                  <label className="text-sm font-medium">Confirm New Password</label>
                   <Input
                     type="password"
                     value={passwords.confirmNewPassword}
-                    onChange={(e) =>
-                      setPasswords({
-                        ...passwords,
-                        confirmNewPassword: e.target.value,
-                      })
-                    }
-                    required
+                    onChange={(e) => setPasswords({ ...passwords, confirmNewPassword: e.target.value })}
                   />
+                  {passwordErrors.confirmNewPassword && <p className="text-red-500 text-sm mt-1">{passwordErrors.confirmNewPassword}</p>}
                 </div>
                 <Button
                   type="submit"

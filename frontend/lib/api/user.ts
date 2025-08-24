@@ -3,7 +3,7 @@ import { axiosInstance } from "./axiosInstance";
 export const updateProfile = async ( data: { name: string; email: string }) => {
     try {
         const res = await axiosInstance.put('/profile', data)
-        return res.data;
+        return res.data.user;
     } catch (error:any) {
         throw error.response?.data || new Error("Something went wrong");        
     }
