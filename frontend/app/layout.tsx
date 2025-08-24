@@ -3,6 +3,9 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import ReduxProvider from "./providers/ReduxProvider";
 import RouteGuardProvider from "./providers/RouteGuardProvider";
+import { Toaster } from "@/components/ui/sonner";
+
+
 
 export const metadata: Metadata = {
   title: "Inkwell",
@@ -21,6 +24,7 @@ export default function RootLayout({
           <RouteGuardProvider>
             <Navbar />
           {children}
+          <Toaster richColors /> 
           </RouteGuardProvider>
         </ReduxProvider>
       </body>

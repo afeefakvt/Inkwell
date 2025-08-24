@@ -13,7 +13,7 @@ export default function Footer() {
 
   const handleClick = ()=>{
     if(token){
-      router.push('/createBlog');
+      router.push('/blogs/create');
     }else{
       router.push('/signup');
     }
