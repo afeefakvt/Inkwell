@@ -33,7 +33,7 @@ export default function LoginPage() {
       const response = await login(formData);
       console.log("Login success:", response);
 
-      router.push("/");
+      router.replace("/");
     } catch (err: any) {
       setError(err.message || "Login failed");
     } finally {
@@ -69,7 +69,6 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="you@email.com"
                 required
-                className="pr-10 focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
               />
             </div>
           </div>
@@ -87,7 +86,6 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="Enter your password"
                 required
-                className="pr-10 focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
               />
               <button
                 type="button"

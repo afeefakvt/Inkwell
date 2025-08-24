@@ -2,8 +2,14 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+
 
 export default function Hero() {
+  const router = useRouter();
+  const token = useSelector((state:RootState)=>state.auth.token)
   return (
     <section className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] text-center bg-gradient-to-b from-white to-gray-50 px-4">
       <motion.h1
@@ -26,10 +32,11 @@ export default function Hero() {
       </motion.p>
 
       <div className="mt-8 flex flex-wrap justify-center gap-4">
-        <Button className="bg-[#6b2737] hover:bg-[#581c2b] text-white cursor-pointer">
+        <Button className="bg-[#6b2737] hover:bg-[#581c2b] text-white cursor-pointer"
+        onClick={()=>router.push(token? "/createBlog" : "/login")}>
           Start Writing Today
         </Button>
-        <Button variant="outline" className="cursor-pointer">
+        <Button variant="outline" className="cursor-pointer" onClick={()=>router.push('blogs')}>
           Explore Stories
         </Button>
       </div>

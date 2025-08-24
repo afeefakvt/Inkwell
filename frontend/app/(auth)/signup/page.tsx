@@ -74,7 +74,6 @@ export default function SignupPage() {
               onChange={handleChange}
               placeholder="John Doe"
               required
-              className="focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
             />
           </div>
 
@@ -87,7 +86,6 @@ export default function SignupPage() {
               onChange={handleChange}
               placeholder="you@email.com"
               required
-              className="focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
             />
           </div>
 
@@ -102,7 +100,6 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="Enter your password"
                 required
-                className="pr-10 focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
               />
               <button
                 type="button"
@@ -125,7 +122,6 @@ export default function SignupPage() {
                 onChange={handleChange}
                 placeholder="Re-enter your password"
                 required
-                className="pr-10 focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
               />
               <button
                 type="button"

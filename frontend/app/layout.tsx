@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import ReduxProvider from "./providers/ReduxProvider";
+import RouteGuardProvider from "./providers/RouteGuardProvider";
 
 export const metadata: Metadata = {
   title: "Inkwell",
@@ -17,8 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-white text-black">
         <ReduxProvider>
-          <Navbar />
+          <RouteGuardProvider>
+            <Navbar />
           {children}
+          </RouteGuardProvider>
         </ReduxProvider>
       </body>
     </html>

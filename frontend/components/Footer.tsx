@@ -3,8 +3,21 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import { RootState } from "@/redux/store"
 
 export default function Footer() {
+  const router = useRouter();
+  const token = useSelector((state:RootState)=>state.auth.token);
+
+  const handleClick = ()=>{
+    if(token){
+      router.push('/createBlog');
+    }else{
+      router.push('/signup');
+    }
+  }
   return (
     <section className="py-20 bg-gray-50 text-center">
       <motion.h2
@@ -24,8 +37,9 @@ export default function Footer() {
         Join thousands of writers who have found their voice on Inkwell.
         Your story matters, and we’re here to help you tell it.
       </motion.p>
-      <Button className="mt-8 bg-[#6b2737] hover:bg-[#581c2b]  text-white cursor-pointer">
-        Create Your Account
+      <Button className="mt-8 bg-[#6b2737] hover:bg-[#581c2b]  text-white cursor-pointer"
+      onClick={handleClick}>
+        {token? "Start Writing" : "Create Your Account"}
       </Button>
     </section>
   )
