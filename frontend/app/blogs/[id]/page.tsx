@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { IBlog } from "@/types/blog";
 import { getBlogById } from "@/lib/api/blog";
-import { ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
+import { ArrowLeft} from "lucide-react";
 
 export default function BlogDetailsPage() {
   const { id } = useParams();
@@ -56,10 +56,7 @@ export default function BlogDetailsPage() {
         </div>
       </div>
 
-
       <hr className="my-6" />
-
-      {/* Content */}
       <div className="prose prose-lg text-gray-800">
         {blog.content}
       </div>
