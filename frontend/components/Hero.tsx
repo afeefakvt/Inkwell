@@ -33,10 +33,10 @@ export default function Hero() {
 
       <div className="mt-8 flex flex-wrap justify-center gap-4">
         <Button className="bg-[#6b2737] hover:bg-[#581c2b] text-white cursor-pointer"
-        onClick={()=>router.push(token? "/createBlog" : "/login")}>
+        onClick={()=>router.push(token? "/blogs/create" : "/login")}>
           Start Writing Today
         </Button>
-        <Button variant="outline" className="cursor-pointer" onClick={()=>router.push('blogs')}>
+        <Button variant="outline" className="cursor-pointer" onClick={()=>router.push('/blogs')}>
           Explore Stories
         </Button>
       </div>

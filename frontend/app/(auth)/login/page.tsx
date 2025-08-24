@@ -32,7 +32,6 @@ export default function LoginPage() {
 
       const response = await login(formData);
       console.log("Login success:", response);
-
       router.replace("/");
     } catch (err: any) {
       setError(err.message || "Login failed");

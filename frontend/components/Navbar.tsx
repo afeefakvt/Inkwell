@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
     <nav className="bg-white border-b shadow-sm h-16 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
         
-        <div className="flex items-center space-x-2 cursor-pointer">
+        <div className="flex items-center space-x-2 cursor-pointer" onClick={()=>router.push('/')}>
           <PenTool className="text-[#6b2737]" size={28} />
           <span className="text-xl font-bold text-gray-900">Inkwell</span>
         </div>
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
           }
 
            <button
-            onClick={() => router.push(token ? "/createBlog" : "/signup")}
+            onClick={() => router.push(token ? "/blogs/create" : "/signup")}
             className="px-4 py-1.5 bg-[#6b2737] text-white rounded-lg hover:bg-[#581c2b] transition cursor-pointer"
           >
             Get Started
