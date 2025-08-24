@@ -1,8 +1,9 @@
 import { Request,Response } from "express";
-import { hashPassword,comparePassword } from '../utils/passwordHash'
+import { comparePassword, hashPassword } from '../utils/passwordHash'
 import User from "../models/user";
-import { HTTP_STATUS } from "../contants/httpStatus";
+import { HTTP_STATUS } from "../constants/httpStatus";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/jwt";
+import { AuthRequest } from "../middlewares/authToken";
 
 
 export const register = async(req:Request,res:Response):Promise<void>=>{
@@ -114,4 +115,50 @@ export const logout = async(req:Request,res:Response):Promise<void>=>{
     } catch (error) {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Internal server error", error });
     }
-}
+};
+
+
+export const updateProfile = async(req:AuthRequest,res:Response)=>{
+    try {
+        const {name,email} = req.body;
+        if(!req.user){
+            return res.status(HTTP_STATUS.UNAUTHORIZED).json({message:"Unauthorized"});
+        }
+
+        const user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (email) user.email = email;
+        if (name) user.name = name;
+
+        await user.save();
+        res.json({ message: "Profile updated successfully", user });
+
+    } catch (error) {
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: "Server error", error: error });
+
+        
+    }
+};
+
+export const changePassword = async (req: AuthRequest, res: Response) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await comparePassword(currentPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Current password is incorrect" });
+
+    const hashedPassword = await hashPassword(newPassword)
+    user.password = hashedPassword
+
+    await user.save();
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+};

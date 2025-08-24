@@ -1,6 +1,6 @@
 import { Blog } from "../models/blog"
 import { Request,Response } from "express";
-import { HTTP_STATUS } from "../contants/httpStatus";
+import { HTTP_STATUS } from "../constants/httpStatus";
 import { AuthRequest } from "../middlewares/authToken";
 import e from "cors";
 
@@ -72,10 +72,15 @@ export const getUserBlogs = async(req:AuthRequest,res:Response):Promise<void>=>{
 };
 
 
-export const updateBlog = async(req:Request,res:Response):Promise<void>=>{
+export const updateBlog = async(req:AuthRequest,res:Response):Promise<void>=>{
     try {
         const {blogId} = req.params;
-        const {title,content} = req.body
+        const {title,content} = req.body;
+
+        if (!req.user) {
+            res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: "Unauthorized" });
+            return;
+        }
 
         const blog = await Blog.findById(blogId)
         if(!blog){
@@ -94,9 +99,14 @@ export const updateBlog = async(req:Request,res:Response):Promise<void>=>{
     }
 };
 
-export const deleteBlog = async(req:Request,res:Response):Promise<void>=>{
+export const deleteBlog = async(req:AuthRequest,res:Response):Promise<void>=>{
     try {
         const {blogId} = req.params;
+        if (!req.user) {
+            res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: "Unauthorized" });
+            return;
+        }
+
         const blog = await Blog.findById(blogId)
         if(!blog){
             res.status(HTTP_STATUS.NOT_FOUND).json({message:"Blog not found"})

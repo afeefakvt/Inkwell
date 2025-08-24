@@ -31,7 +31,7 @@ export const getBlogById = async(blogId:string)=>{
 };
 
 
-export const updateBlog =async(blogId:string,blogData:FormData)=>{
+export const updateBlog =async(blogId:string,blogData:object)=>{
     try {
         const response = await axiosInstance.put(`/blogs/${blogId}`,blogData)
         return response.data

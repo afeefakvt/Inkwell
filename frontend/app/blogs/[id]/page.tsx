@@ -37,10 +37,10 @@ export default function BlogDetailsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       <button
-        onClick={() => router.push("/blogs")}
+        onClick={() => router.back()}
         className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
       >
-        <ArrowLeft size={18} className="mr-1" /> Back to all posts
+        <ArrowLeft size={18} className="mr-1" /> Go back
       </button>
 
       <h1 className="text-4xl font-bold text-[#6b2737] mb-4">{blog.title}</h1>

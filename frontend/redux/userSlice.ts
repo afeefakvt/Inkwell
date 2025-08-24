@@ -38,9 +38,15 @@ const userSlice = createSlice({
             state.isAuthenticated=false,
             Cookies.remove('authToken')
 
+        },
+        updateUser:(state,action:PayloadAction<{user:User}>)=>{
+            state.user = action.payload.user;
+            if(state.token){
+                Cookies.set("authToken",state.token,{expires:15/1440})
+            }
         }
     }
 })
 
-export const {loginSuccess,logout} = userSlice.actions;
+export const {loginSuccess,logout,updateUser} = userSlice.actions;
 export default userSlice.reducer;
