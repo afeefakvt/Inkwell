@@ -51,7 +51,6 @@ export default function SignupPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
-      {/* Logo & Heading */}
       <div className="flex items-center gap-2 mb-6">
         <PenTool className="text-[#6b2737]" size={26} />
         <h1 className="text-2xl font-bold text-gray-900">Inkwell</h1>
@@ -59,7 +58,6 @@ export default function SignupPage() {
 
       <p className="text-gray-600 mb-6">Join us and start sharing your stories</p>
 
-      {/* Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
         <form onSubmit={handleSubmit}>
           <h2 className="text-xl font-semibold text-center mb-2">Create Account</h2>
@@ -67,22 +65,21 @@ export default function SignupPage() {
             Fill in your details to get started
           </p>
 
-          {/* Name */}
           <div className="mb-4">
-            <Label>Full Name</Label>
+            <Label className="mb-1 block">Full Name</Label>
             <Input
               type="text"
-              name="fullName"
+              name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="John Doe"
               required
+              className="focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
             />
           </div>
 
-          {/* Email */}
           <div className="mb-4">
-            <Label>Email</Label>
+            <Label className="mb-1 block">Email</Label>
             <Input
               type="email"
               name="email"
@@ -90,55 +87,58 @@ export default function SignupPage() {
               onChange={handleChange}
               placeholder="you@email.com"
               required
+              className="focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
             />
           </div>
 
-          {/* Password */}
-          <div className="mb-4 relative">
-            <Label>Password</Label>
-            <Input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="pr-10"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+          <div className="mb-4">
+            <Label htmlFor="password" className="mb-1 block">Password</Label>
+            <div className="flex items-center relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                required
+                className="pr-10 focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
-          {/* Confirm Password */}
-          <div className="mb-6 relative">
-            <Label>Confirm Password</Label>
-            <Input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Re-enter your password"
-              className="pr-10"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-            >
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+          <div className="mb-6">
+            <Label htmlFor="confirmPassword" className="mb-1 block">Confirm Password</Label>
+            <div className="flex items-center relative">
+              <Input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Re-enter your password"
+                required
+                className="pr-10 focus:outline-none focus:ring-2 focus:ring-[#6b2737] focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 text-gray-500 hover:text-gray-700"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
-          {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-          {/* Sign Up Button */}
           <Button
             type="submit"
             disabled={loading}
@@ -147,8 +147,6 @@ export default function SignupPage() {
             {loading ? "Registering..." : "Sign Up"}
           </Button>
         </form>
-
-        {/* Footer */}
         <p className="text-center text-sm text-gray-600 mt-6">
           Already have an account?{" "}
           <a href="/login" className="text-[#6b2737] hover:underline">

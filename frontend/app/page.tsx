@@ -4,7 +4,7 @@ import Footer from "@/components/Footer"
 
 export default function LandingPage() {
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col w-full">
       <Hero />
       <Features />
       <Footer/>

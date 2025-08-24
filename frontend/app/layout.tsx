@@ -18,7 +18,7 @@ export default function RootLayout({
       <body className="bg-white text-black">
         <ReduxProvider>
           <Navbar />
-          <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
+          {children}
         </ReduxProvider>
       </body>
     </html>
