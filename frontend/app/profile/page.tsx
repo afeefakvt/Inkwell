@@ -43,13 +43,10 @@ export default function ProfilePage() {
   const [profileErrors, setProfileErrors] = useState<{ name?: string; email?: string }>({});
   const [passwordErrors, setPasswordErrors] = useState<{ currentPassword?: string; newPassword?: string; confirmNewPassword?: string }>({});
 
-  if (!user) {
-    return <div className="text-center py-10">Loading profile...</div>;
-  }
-
+  
   const [profile, setProfile] = useState({
-    name: user.name,
-    email: user.email,
+    name: user?.name,
+    email: user?.email,
   });
 
   const [passwords, setPasswords] = useState({
@@ -59,6 +56,7 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
+    if (!user) return; 
     const fetchBlogs = async () => {
       setLoadingBlogs(true);
       try {
@@ -74,14 +72,19 @@ export default function ProfilePage() {
     fetchBlogs();
   }, []);
 
+  if (!user) {
+    return <div className="text-center py-10">Loading profile...</div>;
+  }
+
+
   const validateProfile = () => {
     const errors: { name?: string; email?: string } = {};
 
-    if (!profile.name.trim()) errors.name = "Name is required.";
+    if (!profile.name?.trim()) errors.name = "Name is required.";
     else if (profile.name.trim().length < 3) errors.name = "Name must be at least 3 characters.";
     else if (profile.name.trim().length > 50) errors.name = "Name cannot exceed 50 characters.";
 
-    if (!profile.email.trim()) errors.email = "Email is required.";
+    if (!profile.email?.trim()) errors.email = "Email is required.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)) errors.email = "Invalid email format.";
 
     setProfileErrors(errors);
@@ -108,8 +111,8 @@ export default function ProfilePage() {
     setLoading(true);
     try {
       const updated = await updateProfile({
-        name: profile.name.trim(),
-        email: profile.email.trim(),
+        name: (profile.name ?? "").trim(),
+        email: (profile.email ?? "").trim(),
       });
 
       dispatch(updateUser({ user:updated }));
@@ -156,6 +159,8 @@ export default function ProfilePage() {
       toast.error(err.message || "Error deleting blog");
     }
   };
+
+  
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8">
