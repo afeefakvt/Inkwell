@@ -70,7 +70,7 @@ export default function ProfilePage() {
     };
 
     fetchBlogs();
-  }, []);
+  }, [user]);
 
   if (!user) {
     return <div className="text-center py-10">Loading profile...</div>;
