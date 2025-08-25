@@ -14,6 +14,7 @@ import { logoutUser } from "@/lib/api/auth";
 const Navbar: React.FC = () => {
   const router = useRouter();
   const token = useSelector((state: RootState) => state.auth.token);
+  const user = useSelector((state: RootState) => state.auth.user); 
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
@@ -21,8 +22,32 @@ const Navbar: React.FC = () => {
     await persistor.flush(); //ensure persisted state is updated
     storage.removeItem("persist:auth"); //clear persisted redux state
     await logoutUser();
-    router.replace("/");
+    router.replace("/login");
   };
+
+    if (token && user?.role === "admin") {
+    return (
+      <nav className="bg-white border-b shadow-sm h-16 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+          <div
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={() => router.push("/admin/dashboard")}
+          >
+            <PenTool className="text-[#6b2737]" size={28} />
+            <span className="text-xl font-bold text-gray-900">Inkwell Admin</span>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1 px-4 py-1.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+          >
+            <LogOut size={16} />
+            <span>Logout</span>
+          </button>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="bg-white border-b shadow-sm h-16 sticky top-0 z-50">

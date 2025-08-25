@@ -4,6 +4,7 @@ export interface IBlog extends Document{
     title:string;
     content:string;
     author:mongoose.Types.ObjectId;
+    isBlocked:boolean;
 }
 
 const blogSchema = new Schema<IBlog>(
@@ -20,6 +21,10 @@ const blogSchema = new Schema<IBlog>(
             type:mongoose.Schema.Types.ObjectId,
             ref:'User',
             required:true
+        },
+        isBlocked:{
+            type:Boolean,
+            default:false
         }
     },
     {timestamps:true}

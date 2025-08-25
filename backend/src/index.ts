@@ -4,8 +4,9 @@ dotenv.config();
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db';
-import userRoutes from './routes/userRoutes'
-import blogRoutes from './routes/blogRoutes'
+import userRoutes from './routes/userRoutes';
+import blogRoutes from './routes/blogRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 const app = express();
 
@@ -18,8 +19,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-app.use('/api',userRoutes)
-app.use('/api',blogRoutes)
+app.use('/api',userRoutes);
+app.use('/api',blogRoutes);
+app.use('/api/admin',adminRoutes);
 
 const port = process.env.PORT || 5000;
 
