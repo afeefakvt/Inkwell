@@ -1,7 +1,7 @@
 # 📝 Inkwell (Blog Application)
 
 A modern blogging platform built with **Next.js + TypeScript (frontend)** and **Express + TypeScript (backend)**.  
-The app supports authentication, profile management, creating/editing/deleting blogs, and more.
+The app supports authentication, profile management, creating/editing/deleting blogs, admin side management and more.
 
 ---
 
