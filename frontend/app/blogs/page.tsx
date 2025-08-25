@@ -40,10 +40,10 @@ export default function BlogsPage() {
       {error && <p className="text-center text-red-500 font-medium">{error}</p>}
 
       {!loading && !error && blogs.length > 0 && (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
           {blogs.map((blog) => (
             <Link key={blog._id} href={`/blogs/${blog._id}`}>
-              <Card className="h-full flex flex-col rounded-xl shadow-sm hover:shadow-md transition cursor-pointer">
+              <Card className="flex flex-col h-full rounded-xl shadow-sm hover:shadow-md transition cursor-pointer">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-gray-900">
                     {blog.title}
