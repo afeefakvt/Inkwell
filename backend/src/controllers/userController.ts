@@ -47,6 +47,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: "Invalid email " });
       return;
     }
+
+    if (user.isBlocked) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: "Your account has been blocked. Please contact support." });
+      return;
+    };
+
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
       res

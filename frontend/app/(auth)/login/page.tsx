@@ -61,7 +61,8 @@ export default function LoginPage() {
         router.replace("/");
       }
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      const message = err?.message || err?.error || "Login failed";
+      setError(message)
     } finally {
       setLoading(false);
     }
