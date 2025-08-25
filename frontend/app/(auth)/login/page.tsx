@@ -55,7 +55,11 @@ export default function LoginPage() {
 
       const response = await login(formData);
       console.log("Login success:", response);
-      router.replace("/");
+      if(response.user.role==="admin"){
+        router.replace('/admin/dashboard')
+      }else{
+        router.replace("/");
+      }
     } catch (err: any) {
       setError(err.message || "Login failed");
     } finally {
